@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Select = ({ color, colors, onChange }) => {
-	onSelect = (event) => {
+	this.onSelect = (event) => {
 		onChange(event.target.value);
 	};
 

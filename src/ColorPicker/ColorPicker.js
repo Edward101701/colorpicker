@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import RGBSelect from '../RGBSelect/RGBSelect';
 
+import './ColorPicker.css';
+import RGBSelect from '../RGBSelect/RGBSelect';
 import Select from '../Select/Select';
 
 class ColorPicker extends Component {
@@ -8,24 +9,24 @@ class ColorPicker extends Component {
         super(props);
 
         this.state = {
-            color: 'ffff00',
+            color: '#ffff00',
         };
         this.colors = [
             {
                 title: 'red',
-                value: 'ff0000',
+                value: '#ff0000',
             },
 			{
 				title: 'yellow',
-				value: 'ffff00',
+				value: '#ffff00',
 			},
 			{
 				title: 'green',
-				value: '00ff00',
+				value: '#00ff00',
 			},
 			{
 				title: 'blue',
-				value: '0000ff',
+				value: '#0000ff',
 			},
         ];
 
@@ -33,21 +34,20 @@ class ColorPicker extends Component {
         this.onColorChange = this.onColorChange.bind(this);
     }
 
-	onColorSelect(color) {
-        debugger;
-        this.setState({ color });
+	onColorSelect(newColor) {
+        this.setState({ color: newColor });
     }
 
     onColorChange(event) {
-        this.setState({ color: event.target.value.substring(1) });
+        this.setState({ color: event.target.value.trim() });
     }
 
 	render() {
         const { color } = this.state;
 
 		return (
-		    <div>
-                <input name="color" value={`#${color}`} onChange={this.onColorChange} />
+		    <div className="color-picker">
+                <input name="color" value={color} onChange={this.onColorChange} />
                 <RGBSelect value={color} onChange={this.onColorSelect} />
                 <Select color={color} colors={this.colors} onChange={this.onColorSelect} />
             </div>

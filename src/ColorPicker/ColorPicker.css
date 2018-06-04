@@ -1,0 +1,12 @@
+.color-picker {
+    display: flex;
+    position: relative;
+}
+.color-picker input {
+    text-transform: uppercase;
+    color: #989899;
+    padding: .3rem;
+    font-weight: bold;
+    font-size: 1rem;
+    border: 1px solid #bfc0c1;
+}

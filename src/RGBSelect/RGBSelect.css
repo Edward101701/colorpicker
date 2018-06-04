@@ -1,0 +1,15 @@
+.rgb-form {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    top: 100px;
+    left: 100px;
+}
+
+.rgb-container__toggle {
+    width: 3rem;
+    height: 3rem;
+    background: none;
+    border: none;
+}
