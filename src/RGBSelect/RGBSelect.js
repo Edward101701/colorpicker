@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import './RGBSelect.css';
 import { rgbToHex, hexToRgb } from '../helpers';
 
 class RGBSelect extends Component {
@@ -70,20 +69,31 @@ class RGBSelect extends Component {
 
 		return (
 			<div className="rgb-container">
-				<button
-					className="rgb-container__toggle"
-					type="button"
+				<a
+					className="toggle"
 					onClick={this.toggleFormVisibility}
-					name="Open RGB form"
-					style={{ backgroundColor: rgbToHex(color.r, color.g, color.b) }}
-				/>
+					title="Open RGB form"
+				>
+					<span style={{ backgroundColor: rgbToHex(color.r, color.g, color.b) }} className="color-example">&nbsp;</span>
+				</a>
 				{ isFormActive &&
 				<form className="rgb-form">
-					<input name="r" type="range" max="255" onChange={this.onColorChange} value={color.r} />
-					<input name="g" type="range" max="255" onChange={this.onColorChange} value={color.g} />
-					<input name="b" type="range" max="255" onChange={this.onColorChange} value={color.b} />
-					<button type="button" onClick={this.onCancel}>Cancel</button>
-					<button type="button" onClick={this.onSave}>Ok</button>
+					<div className="rgb-form__item">
+						<label>R</label>
+						<input className="rgb-form__range" name="r" type="range" max="255" onChange={this.onColorChange} value={color.r} />
+					</div>
+					<div className="rgb-form__item">
+						<label>G</label>
+						<input className="rgb-form__range" name="g" type="range" max="255" onChange={this.onColorChange} value={color.g} />
+					</div>
+					<div className="rgb-form__item">
+						<label>B</label>
+						<input className="rgb-form__range" name="b" type="range" max="255" onChange={this.onColorChange} value={color.b} />
+					</div>
+					<div className="rgb-form__footer">
+						<button className="rgb-form__button" type="button" onClick={this.onCancel}>Cancel</button>
+						<button className="rgb-form__button rgb-form__button_success" type="button" onClick={this.onSave}>Ok</button>
+					</div>
 				</form>
 				}
 			</div>

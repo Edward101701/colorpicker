@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import './ColorPicker.css';
 import RGBSelect from '../RGBSelect/RGBSelect';
 import Select from '../Select/Select';
 
@@ -47,7 +46,7 @@ class ColorPicker extends Component {
 
 		return (
 		    <div className="color-picker">
-                <input name="color" value={color} onChange={this.onColorChange} />
+                <input className="input" name="color" value={color} onChange={this.onColorChange} />
                 <RGBSelect value={color} onChange={this.onColorSelect} />
                 <Select color={color} colors={this.colors} onChange={this.onColorSelect} />
             </div>
