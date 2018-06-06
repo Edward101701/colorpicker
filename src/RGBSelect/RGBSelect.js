@@ -8,16 +8,27 @@ class RGBSelect extends Component {
 		this.state = {
 			isFormActive: false,
 			color: {
-				r: 0,
-				g: 0,
+				r: 255,
+				g: 255,
 				b: 0,
+			},
+			formPosition: {
+				top: 0,
+				left: 0,
 			}
+		};
+		this.formOffset = {
+			top: 60,
+			left: -100,
 		};
 
 		this.onColorChange = this.onColorChange.bind(this);
 		this.toggleFormVisibility = this.toggleFormVisibility.bind(this);
 		this.onCancel = this.onCancel.bind(this);
 		this.onSave = this.onSave.bind(this);
+        this.setWrapperRef = this.setWrapperRef.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.closeForm = this.closeForm.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -29,6 +40,14 @@ class RGBSelect extends Component {
 		this.setState({ color });
 	}
 
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
 	onColorChange(event) {
 		const { onChange } = this.props;
 		let newColor = { ...this.state.color };
@@ -37,20 +56,30 @@ class RGBSelect extends Component {
 		onChange(rgbToHex(newColor.r, newColor.g, newColor.b));
 	}
 
-	toggleFormVisibility() {
+	toggleFormVisibility(event) {
 		const { isFormActive } = this.state;
 
 		if (!isFormActive) {
 			const { color } = this.state;
-			this.setState({ backupColor: color });
+			this.setState({
+				backupColor: color,
+				position: {
+					top: event.target.offsetTop + this.formOffset.top,
+					left: event.target.offsetLeft + this.formOffset.left,
+				}
+			});
+            this.setState({ isFormActive: true });
 		} else {
-			const { backupColor } = this.state;
-			const { onChange } = this.props;
-			this.setState({ color: backupColor });
-			onChange(rgbToHex(backupColor.r, backupColor.g, backupColor.b));
+			this.closeForm();
 		}
+	}
 
-		this.setState({ isFormActive: !isFormActive });
+	closeForm() {
+        const { backupColor } = this.state;
+        const { onChange } = this.props;
+        this.setState({ color: backupColor });
+        onChange(rgbToHex(backupColor.r, backupColor.g, backupColor.b));
+        this.setState({ isFormActive: false });
 	}
 
 	onCancel() {
@@ -64,11 +93,23 @@ class RGBSelect extends Component {
 		this.setState({ backupColor: null, isFormActive: false });
 	}
 
+    setWrapperRef(node) {
+        this.wrapperRef = node;
+    }
+
+    handleClickOutside(event) {
+		const { isFormActive } = this.state;
+
+        if (isFormActive && this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+            this.closeForm();
+        }
+    }
+
 	render() {
-		const { isFormActive, color } = this.state;
+		const { isFormActive, color, position } = this.state;
 
 		return (
-			<div className="rgb-container">
+			<div className="rgb-container" ref={this.setWrapperRef}>
 				<a
 					className="toggle"
 					onClick={this.toggleFormVisibility}
@@ -77,7 +118,7 @@ class RGBSelect extends Component {
 					<span style={{ backgroundColor: rgbToHex(color.r, color.g, color.b) }} className="color-example">&nbsp;</span>
 				</a>
 				{ isFormActive &&
-				<form className="rgb-form">
+				<form className="rgb-form" style={{ top: position.top, left: position.left }}>
 					<div className="rgb-form__item">
 						<label>R</label>
 						<input className="rgb-form__range" name="r" type="range" max="255" onChange={this.onColorChange} value={color.r} />

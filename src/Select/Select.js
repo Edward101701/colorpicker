@@ -5,9 +5,19 @@ class Select extends Component {
 		super(props);
 		this.state = {
 			isDropdownActive: false,
+            listPosition: {
+                top: 0,
+                left: 0,
+            }
 		};
+        this.listOffset = {
+            top: 60,
+            left: -100,
+        };
 		this.onSelect = this.onSelect.bind(this);
 		this.toggleFormVisibility = this.toggleFormVisibility.bind(this);
+        this.setWrapperRef = this.setWrapperRef.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
 
 	onSelect(colorHex) {
@@ -16,20 +26,48 @@ class Select extends Component {
 		this.toggleFormVisibility();
 	}
 
-	toggleFormVisibility() {
+	toggleFormVisibility(event) {
 		const { isDropdownActive } = this.state;
+		if (!isDropdownActive) {
+			this.setState({
+				listPosition: {
+					top: event.target.offsetTop + this.listOffset.top,
+					left: event.target.offsetLeft + this.listOffset.left,
+				}
+			});
+		}
 		this.setState({ isDropdownActive: !isDropdownActive });
 	}
 
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    setWrapperRef(node) {
+        this.wrapperRef = node;
+    }
+
+    handleClickOutside(event) {
+        const { isDropdownActive } = this.state;
+
+        if (isDropdownActive && this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+            this.setState({ isDropdownActive: false });
+        }
+    }
+
 	render() {
-		const { isDropdownActive } = this.state;
+		const { isDropdownActive, listPosition } = this.state;
 		const { color, colors } = this.props;
 
 		return (
-			<div>
+			<div ref={this.setWrapperRef}>
 				<a onClick={this.toggleFormVisibility} title="Toggle color select"><img className="toggle toggle_dropdown" alt="" /></a>
 				{ isDropdownActive &&
-				<ul className="color-list">
+				<ul className="color-list" style={{ top: listPosition.top, left: listPosition.left }}>
 					{ colors.map(color => (
 						<li className="color-list__item" onClick={() => { this.onSelect(color.value) }} key={color.value}>
 							{ color.title }

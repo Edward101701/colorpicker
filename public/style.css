@@ -85,6 +85,12 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
+    border-bottom: 1px solid #e2e2e2;
+}
+.color-list__item:hover,
+.color-list__item_active {
+    background: #3d87ff;
+    color: #fff;
 }
 
 .color-example {
