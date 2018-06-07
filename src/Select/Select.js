@@ -5,7 +5,7 @@ class Select extends Component {
 		super(props);
 		this.state = {
 			isDropdownActive: false,
-            listPosition: {
+            popupPosition: {
                 top: 0,
                 left: 0,
             }
@@ -30,7 +30,7 @@ class Select extends Component {
 		const { isDropdownActive } = this.state;
 		if (!isDropdownActive) {
 			this.setState({
-				listPosition: {
+				popupPosition: {
 					top: event.target.offsetTop + this.listOffset.top,
 					left: event.target.offsetLeft + this.listOffset.left,
 				}
@@ -60,16 +60,16 @@ class Select extends Component {
     }
 
 	render() {
-		const { isDropdownActive, listPosition } = this.state;
-		const { color, colors } = this.props;
+		const { isDropdownActive, popupPosition } = this.state;
+		const { value, colors } = this.props;
 
 		return (
 			<div ref={this.setWrapperRef}>
 				<a onClick={this.toggleFormVisibility} title="Toggle color select"><img className="toggle toggle_dropdown" alt="" /></a>
 				{ isDropdownActive &&
-				<ul className="color-list" style={{ top: listPosition.top, left: listPosition.left }}>
+				<ul className="color-list" style={{ top: popupPosition.top, left: popupPosition.left }}>
 					{ colors.map(color => (
-						<li className="color-list__item" onClick={() => { this.onSelect(color.value) }} key={color.value}>
+						<li className={`color-list__item ${color.value === value ? 'color-list__item_active' : ''}`} onClick={() => { this.onSelect(color.value) }} key={color.value}>
 							{ color.title }
 							<div className="color-example color-example_miniature" style={{ backgroundColor: color.value }}>&nbsp;</div>
 						</li>

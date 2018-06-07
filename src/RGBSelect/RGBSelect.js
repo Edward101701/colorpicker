@@ -7,15 +7,10 @@ class RGBSelect extends Component {
 		super(props);
 		this.state = {
 			isFormActive: false,
-			color: {
-				r: 255,
-				g: 255,
-				b: 0,
-			},
-			formPosition: {
+			popupPosition: {
 				top: 0,
 				left: 0,
-			}
+			},
 		};
 		this.formOffset = {
 			top: 60,
@@ -31,15 +26,6 @@ class RGBSelect extends Component {
         this.closeForm = this.closeForm.bind(this);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		const { value } = nextProps;
-		const color = hexToRgb(value);
-		if (!color) {
-			return;
-		}
-		this.setState({ color });
-	}
-
     componentDidMount() {
         document.addEventListener('mousedown', this.handleClickOutside);
     }
@@ -49,10 +35,9 @@ class RGBSelect extends Component {
     }
 
 	onColorChange(event) {
-		const { onChange } = this.props;
-		let newColor = { ...this.state.color };
+		const { onChange, value } = this.props;
+		let newColor = hexToRgb(value);
 		newColor[event.target.name] = +event.target.value;
-		this.setState({ color: newColor });
 		onChange(rgbToHex(newColor.r, newColor.g, newColor.b));
 	}
 
@@ -60,10 +45,10 @@ class RGBSelect extends Component {
 		const { isFormActive } = this.state;
 
 		if (!isFormActive) {
-			const { color } = this.state;
+			const { value } = this.props;
 			this.setState({
-				backupColor: color,
-				position: {
+				backupColor: value,
+				popupPosition: {
 					top: event.target.offsetTop + this.formOffset.top,
 					left: event.target.offsetLeft + this.formOffset.left,
 				}
@@ -77,16 +62,15 @@ class RGBSelect extends Component {
 	closeForm() {
         const { backupColor } = this.state;
         const { onChange } = this.props;
-        this.setState({ color: backupColor });
-        onChange(rgbToHex(backupColor.r, backupColor.g, backupColor.b));
+        onChange(backupColor);
         this.setState({ isFormActive: false });
 	}
 
 	onCancel() {
 		const { backupColor } = this.state;
 		const { onChange } = this.props;
-		this.setState({ color: backupColor, isFormActive: false });
-		onChange(rgbToHex(backupColor.r, backupColor.g, backupColor.b));
+		this.setState({ isFormActive: false });
+		onChange(backupColor);
 	}
 
 	onSave() {
@@ -106,30 +90,32 @@ class RGBSelect extends Component {
     }
 
 	render() {
-		const { isFormActive, color, position } = this.state;
+		const { isFormActive, popupPosition } = this.state;
+		const { value } = this.props;
+		const rgbColor = hexToRgb(value);
 
 		return (
 			<div className="rgb-container" ref={this.setWrapperRef}>
 				<a
-					className="toggle"
+					className="toggle toggle_color-demo"
 					onClick={this.toggleFormVisibility}
 					title="Open RGB form"
 				>
-					<span style={{ backgroundColor: rgbToHex(color.r, color.g, color.b) }} className="color-example">&nbsp;</span>
+					<span style={{ backgroundColor: value }} className="color-example color-example_toggle">&nbsp;</span>
 				</a>
 				{ isFormActive &&
-				<form className="rgb-form" style={{ top: position.top, left: position.left }}>
+				<form className="rgb-form" style={{ top: popupPosition.top, left: popupPosition.left }}>
 					<div className="rgb-form__item">
 						<label>R</label>
-						<input className="rgb-form__range" name="r" type="range" max="255" onChange={this.onColorChange} value={color.r} />
+						<input className="rgb-form__range" name="r" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.r} />
 					</div>
 					<div className="rgb-form__item">
 						<label>G</label>
-						<input className="rgb-form__range" name="g" type="range" max="255" onChange={this.onColorChange} value={color.g} />
+						<input className="rgb-form__range" name="g" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.g} />
 					</div>
 					<div className="rgb-form__item">
 						<label>B</label>
-						<input className="rgb-form__range" name="b" type="range" max="255" onChange={this.onColorChange} value={color.b} />
+						<input className="rgb-form__range" name="b" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.b} />
 					</div>
 					<div className="rgb-form__footer">
 						<button className="rgb-form__button" type="button" onClick={this.onCancel}>Cancel</button>

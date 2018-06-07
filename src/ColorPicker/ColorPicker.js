@@ -9,6 +9,7 @@ class ColorPicker extends Component {
 
         this.state = {
             color: '#ffff00',
+            fakeColor: '',
         };
         this.colors = [
             {
@@ -48,7 +49,7 @@ class ColorPicker extends Component {
 		    <div className="color-picker">
                 <input className="input" name="color" value={color} onChange={this.onColorChange} />
                 <RGBSelect value={color} onChange={this.onColorSelect} />
-                <Select color={color} colors={this.colors} onChange={this.onColorSelect} />
+                <Select value={color} colors={this.colors} onChange={this.onColorSelect} />
             </div>
         )
 	}
