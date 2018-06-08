@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import Popup from '../Popup';
 import { rgbToHex, hexToRgb } from '../helpers';
 
 class RGBSelect extends Component {
@@ -21,18 +22,9 @@ class RGBSelect extends Component {
 		this.toggleFormVisibility = this.toggleFormVisibility.bind(this);
 		this.onCancel = this.onCancel.bind(this);
 		this.onSave = this.onSave.bind(this);
-        this.setWrapperRef = this.setWrapperRef.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.closeForm = this.closeForm.bind(this);
 	}
-
-    componentDidMount() {
-        document.addEventListener('mousedown', this.handleClickOutside);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
-    }
 
 	onColorChange(event) {
 		const { onChange, value } = this.props;
@@ -79,14 +71,10 @@ class RGBSelect extends Component {
 		this.setState({ backupColor: null, isFormActive: false });
 	}
 
-    setWrapperRef(node) {
-        this.wrapperRef = node;
-    }
-
     handleClickOutside(event) {
 		const { isFormActive } = this.state;
 
-        if (isFormActive && this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+        if (isFormActive) {
             this.closeForm();
         }
     }
@@ -97,34 +85,36 @@ class RGBSelect extends Component {
 		const rgbColor = hexToRgb(value);
 
 		return (
-			<div className="rgb-container" ref={this.setWrapperRef}>
-				<a
-					className="toggle toggle_color-demo"
-					onClick={this.toggleFormVisibility}
-					title="Open RGB form"
-				>
-					<span style={{ backgroundColor: value }} className="color-example color-example_toggle">&nbsp;</span>
-				</a>
-				{ isFormActive &&
-				<form className="rgb-form" style={{ top: popupPosition.top, left: popupPosition.left }}>
-					<div className="rgb-form__item">
-						<label>R</label>
-						<input className="rgb-form__range" name="r" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.r} />
-					</div>
-					<div className="rgb-form__item">
-						<label>G</label>
-						<input className="rgb-form__range" name="g" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.g} />
-					</div>
-					<div className="rgb-form__item">
-						<label>B</label>
-						<input className="rgb-form__range" name="b" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.b} />
-					</div>
-					<div className="rgb-form__footer">
-						<button className="rgb-form__button" type="button" onClick={this.onCancel}>Cancel</button>
-						<button className="rgb-form__button rgb-form__button_success" type="button" onClick={this.onSave}>Ok</button>
-					</div>
-				</form>
-				}
+			<div className="rgb-container">
+				<Popup onClickOutside={this.handleClickOutside}>
+					<a
+						className="toggle toggle_color-demo"
+						onClick={this.toggleFormVisibility}
+						title="Open RGB form"
+					>
+						<span style={{ backgroundColor: value }} className="color-example color-example_toggle">&nbsp;</span>
+					</a>
+					{ isFormActive &&
+					<form className="rgb-form" style={{ top: popupPosition.top, left: popupPosition.left }}>
+						<div className="rgb-form__item">
+							<label>R</label>
+							<input className="rgb-form__range" name="r" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.r} />
+						</div>
+						<div className="rgb-form__item">
+							<label>G</label>
+							<input className="rgb-form__range" name="g" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.g} />
+						</div>
+						<div className="rgb-form__item">
+							<label>B</label>
+							<input className="rgb-form__range" name="b" type="range" max="255" onChange={this.onColorChange} value={rgbColor && rgbColor.b} />
+						</div>
+						<div className="rgb-form__footer">
+							<button className="rgb-form__button" type="button" onClick={this.onCancel}>Cancel</button>
+							<button className="rgb-form__button rgb-form__button_success" type="button" onClick={this.onSave}>Ok</button>
+						</div>
+					</form>
+					}
+				</Popup>
 			</div>
 		)
 	}

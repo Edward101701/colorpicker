@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Popup from '../Popup';
+
 class Select extends Component {
 	constructor(props) {
 		super(props);
@@ -16,7 +18,6 @@ class Select extends Component {
         };
 		this.onSelect = this.onSelect.bind(this);
 		this.toggleFormVisibility = this.toggleFormVisibility.bind(this);
-        this.setWrapperRef = this.setWrapperRef.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
 	}
 
@@ -39,22 +40,10 @@ class Select extends Component {
 		this.setState({ isDropdownActive: !isDropdownActive });
 	}
 
-    componentDidMount() {
-        document.addEventListener('mousedown', this.handleClickOutside);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
-    }
-
-    setWrapperRef(node) {
-        this.wrapperRef = node;
-    }
-
     handleClickOutside(event) {
         const { isDropdownActive } = this.state;
 
-        if (isDropdownActive && this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+        if (isDropdownActive) {
             this.setState({ isDropdownActive: false });
         }
     }
@@ -64,7 +53,7 @@ class Select extends Component {
 		const { value, colors } = this.props;
 
 		return (
-			<div ref={this.setWrapperRef}>
+			<Popup onClickOutside={this.handleClickOutside}>
 				<a onClick={this.toggleFormVisibility} title="Toggle color select"><img className="toggle toggle_dropdown" alt="" /></a>
 				{ isDropdownActive &&
 				<ul className="color-list" style={{ top: popupPosition.top, left: popupPosition.left }}>
@@ -76,7 +65,7 @@ class Select extends Component {
 					))}
 				</ul>
 				}
-			</div>
+			</Popup>
 		)
 	}
 }
