@@ -38,7 +38,7 @@ class RGBSelect extends Component {
 		const { onChange, value } = this.props;
 		let newColor = hexToRgb(value);
 		newColor[event.target.name] = +event.target.value;
-		onChange(rgbToHex(newColor.r, newColor.g, newColor.b));
+		onChange(rgbToHex(newColor.r, newColor.g, newColor.b), true);
 	}
 
 	toggleFormVisibility(event) {
@@ -74,6 +74,8 @@ class RGBSelect extends Component {
 	}
 
 	onSave() {
+        const { onChange, value } = this.props;
+        onChange(value);
 		this.setState({ backupColor: null, isFormActive: false });
 	}
 
